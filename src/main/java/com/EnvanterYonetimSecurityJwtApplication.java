@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EnvanterYonetimApplication {
+public class EnvanterYonetimSecurityJwtApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EnvanterYonetimApplication.class, args);
+		SpringApplication.run(EnvanterYonetimSecurityJwtApplication.class, args);
 	}
 	
 }

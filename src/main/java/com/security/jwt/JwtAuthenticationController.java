@@ -134,9 +134,21 @@ public class JwtAuthenticationController {
 	public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshRequest refreshRequest) {
 		AuthenticationResponse response = new AuthenticationResponse();
 		UserTokenEntity token = refreshTokenService.getByUser(refreshRequest.getUserId());
-		if(token.getToken().equals(refreshRequest.getRefreshToken()) && !refreshTokenService.isRefreshExpired(token)) {
-
-			UserEntity user = token.getUser();
+		if(token==null 
+				|| (//token.getToken().equals(refreshRequest.getRefreshToken()) && /*daha once aldigi token bilinmiyor olabilir*/
+						!refreshTokenService.isRefreshExpired(token)
+						)
+				) {
+			UserEntity user = null;
+			if (token == null) {
+				user = userService.getById(refreshRequest.getUserId());
+			} else {
+				user = token.getUser();
+			}
+			if (user==null || (user!=null && user.getId()==null)) {
+				response.setMessage(refreshRequest.getUserId() + " user is not valid.");
+				return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);				
+			}
 			String jwtToken = jwtTokenProvider.generateTokenFromUsername(user.getUserName());
 			response.setMessage("token successfully refreshed.");
 			response.setAccessToken("Bearer " + jwtToken);
